@@ -1,0 +1,187 @@
+"""
+Chapter 7 from ATBS,
+Write a program to check a date DD/MM/YYYY.
+Make it check for leap years
+Make it check if the day is possible in the month
+
+"""
+import re
+
+
+#Check input and format the input with .lower() and open the function
+# TODO finish the year checker
+# TODO rearange the date input, start with the year, then month and at last the day input.
+
+def userInput():
+
+    userAction = None
+
+    print("""
+            Welcome,
+            what would you like to do?
+            check if a given year is an leap year or not,
+            or do you want to know if an given date is valide?
+            """)
+
+    choice = input("for leap year type y or year\nfor date type d or date\n-->")
+
+    if (choice.lower() == 'y') or (choice.lower() == 'year'):
+        print("You have enter the year, we continue?")
+        userAction = leapYearInput()
+    elif (choice.lower() == 'd') or (choice.lower() == 'date'):
+        print("You have chosen the date, we continue?")
+        userAction = dayInput()
+    else:
+        print(f"So you have chosen death {choice}")
+
+    return userAction
+
+# Here we will format the input to yyyy,
+
+def leapYearInput():
+    print("""
+            Next step,
+            you need to provide a year.
+            """
+            )
+    # while loop to get  the amount of caracters
+
+    checkYear = input("What year will it be\n(yyyy) --> ")
+    while len(checkYear) != 4:
+        checkYear = input("What year will it be\n(yyyy) --> ")
+
+    # returns True when you have four digits
+
+    yearRegex = re.compile(r"\d\d\d\d")
+    mo = bool(yearRegex.search(checkYear))
+    if mo == True:
+        print("We will check this year for you")
+        # Calling the next function to check the data
+    else:
+        print("Dont be stupid\nWe will start this function again")
+        yearCheck()         # Recalling the function when they don't enter four \D
+
+    return leapYearCheck(checkYear)
+
+
+# leap year checker
+# yyyy%4
+# But not yyyy % 4 and yyyy % 100
+# Unless yyyy % 4 and yyyy % 100 and yyyy % 400
+
+def leapYearCheck(year):
+
+    leapCheck = int(year)
+    leapFirst = leapCheck % 4
+    leapSecond = leapCheck % 100
+    leapThird = leapCheck % 400
+    leapChecked = False
+
+    if (leapFirst == 0 and leapSecond != 0) or (leapFirst == 0 and leapSecond == 0 and leapThird == 0):
+        print("Leap year found")
+        leapChecked = True
+    else:
+        print("Not yet there man")
+    return leapChecked
+
+# Here we will check the day, if it has two digits and <=31
+# when True we call the month function
+
+def dayInput():
+    print("""
+            Next step,
+            give me a date.
+            We will start with the days.
+            01-31
+            """
+            )
+    # while loop to get two digits
+
+    dateInput = input("What day of the month are we going to check?\n--> ")
+    while len(dateInput) != 2:
+        dateInput = input("What day of the month are we going to check?\n--> ")
+
+    # regex to check if the input are two digits and becomes a boolean
+
+    dayRegex = re.compile(r"\d\d")
+    mo2 = bool(dayRegex.search(dateInput))
+
+    # checks for the boolean and if the date is possible
+
+    if (mo2 == True) and (int(dateInput) <=31):
+        print("You have a valide day\nWe continue")
+    else:
+        print("\tYou did not pass this test.\n\tYou have a day that's more then 31\n\tlets do this again.")
+        dayInput()
+
+    return monthCheck(int(dateInput))
+
+def monthCheck(day):
+
+    monthDay = day
+    print("""
+            Now i want to know what month you have chosen.
+            We will do this the same as before.
+            Two digits in the range from 01 up and to 12
+            """
+            )
+    monthInput = input("What month is gonna be?\n-->")
+    while (len(monthInput)) != 2:
+        monthInput = input("What month is gonna be?\n-->")
+
+    monthRegex = re.compile(r"\d\d")
+    mo3 = bool(monthRegex.search(monthInput))
+    print(mo3)
+    if (mo3 == True) and (int(monthInput) <= 12):
+        print(f"You have a working day {monthDay} and working month {monthInput}")
+    else:
+        print("Not yet")
+        monthCheck(monthDay)
+    return yearInput(monthDay, int(monthInput))
+
+def yearInput(day, month):
+    
+    day = day
+    month = month
+
+    print("""
+            Now enter a year, four digit's please.
+            Unfortunatly we start from the 1000 un and to 9999
+
+            """
+            )
+
+    yearInput = input("What year will it be?\n-->")
+    while len(yearInput) != 4:
+        yearInput = input("What year will it be?\n-->")
+
+    yearRegex = re.compile(r"\d\d\d\d")
+    mo4 = bool(yearRegex.search(yearInput))
+    
+    if mo4 == True:
+        leapYear = leapYearCheck(yearInput)
+    
+    return validation(day, month, yearInput, leapYear)
+    
+def validation(day, month, yearInput, leapYear):
+    day = day 
+    month = month
+    year = yearInput
+    leapyear = leapYear
+    
+    dates = { 1:31, 2:28, 3:30, 4:31, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
+    dayValidater = dates.get(month, 0)
+    if (leapyear == True) and (month == 2) and (day <= 29):
+        print(f"You have a valide date, {day} - {month} - {year}")
+    elif day <= dayValidater:
+        print(f"You have a valide date, {day} - {month} - {year}")
+    else: 
+        print(f"You do not have a valide day, {dayValidater} is the maximum")
+        
+        
+        
+    
+   
+    
+userInput()
+

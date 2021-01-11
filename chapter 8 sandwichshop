@@ -1,0 +1,161 @@
+import pyinputplus as pyip
+
+"""Chapter 8 from ATBS, make a sandwich shop like script"""
+
+def bread():
+
+    print("-" * 30)
+    print("What type of bread do you want for your sandwich?\n")
+    breadChoice = pyip.inputMenu(['Wheat','White', 'sourdough'], numbered = True)
+
+    return breadChoice
+
+def protein():
+    
+    print('-' * 30)
+    print("What type of protein would you like?\n")
+    proteinChoice = pyip.inputMenu(['Chicken', 'Turkey', 'Ham', 'Tofu'], numbered = True)
+
+    return proteinChoice
+
+def cheese():
+
+    cheeseChoice = None
+    print('-'  * 30)
+    print("Would you like to have some cheese on it?\n")
+    cheeseYesNo = pyip.inputYesNo("Yes or No \n")
+    if cheeseYesNo == 'yes':
+        print("What kind of cheese would you like?\n")
+        cheeseType = pyip.inputMenu(['Cheddar', 'Swiss', 'Mozzarella'], numbered = True)
+    else:
+        pass
+
+    return cheeseType
+
+def mayo():
+
+    mayoChoice = None
+    print('-' * 30)
+    print("Would you like to have some mayo on your sandwich?\n")
+    mayoYesNo = pyip.inputYesNo("Yes or No \n")
+    if mayoYesNo == 'yes':
+        mayoChoice = 'Mayo'
+    else:
+        pass
+
+    return mayoChoice
+
+def mustard():
+
+    mustardChoice = None
+    print('-' * 30)
+    print("Would you like to have some mustard on your sandwich?\n")
+    mustardYesNo = pyip.inputYesNo("Yes or No \n")
+    if mustardYesNo == 'yes':
+        mustardChoice = 'Mustard'
+    else:
+        pass
+
+    return mustardChoice
+
+def lettuce():
+
+    lettuceChoice = None
+    print('-' * 30)
+    print("Would you like to have some lettuce on your sandwich?\n")
+    lettuceYesNO = pyip.inputYesNo("Yes or No \n")
+    if lettuceYesNO == 'Yes':
+        lettuceChoice = 'Lettuce'
+    else:
+        pass
+
+    return lettuceChoice
+
+def tomato():
+
+    tomatoChoice = None
+    print('-' * 30)
+    print("Would you like to have some tomatoes on your sandwich?\n")
+    tomatoYesNo = pyip.inputYesNo("Yes or No \n")
+    if tomatoYesNo == 'yes':
+        tomatoChoice = 'Tomato'
+    else:
+        pass
+
+    return tomatoChoice
+
+def sandwich():
+    """ Loop over all the ingredient functions, and adds it to the list if its not None.
+        This list will be send to the pricing function"""
+    
+    order = []
+
+    choices = {'bread': bread(),
+                'protein': protein(),
+                'cheese': cheese(),
+                'mayo': mayo(),
+                'mustard': mustard(),
+                'lettuce': lettuce(),
+                'tomato': tomato()}
+
+    for v in choices.values():
+        if v != None:
+            order.append(v)
+        else:
+            pass
+
+    return pricing(order)
+
+def pricing(custumer):
+    """ Make a dict, by looping the custumer[list] over the priceList and add the matches to a new dict.
+        This dict will be send to the checkout"""
+
+    custumer = custumer
+    custumerOrder = {}
+    priceList = {'Wheat': 5,
+                'White': 5,
+                'Sourdough': 5,
+                'Chicken': 3,
+                'Turkey': 3,
+                'Ham': 3,
+                'Tofu': 3,
+                'Cheddar': 2,
+                'Swiss': 2,
+                'Mozzarella': 2,
+                'Mayo': 1,
+                'Mustard': 1,
+                'Lettuce': 1,
+                'Tomato': 1}
+
+    for k, v in priceList.items():
+        if k in custumer:
+            custumerOrder[k] = v
+        else:
+            pass
+
+    return checkout(custumerOrder)
+
+def checkout(order):
+    order = order
+    price = []
+    amountOfSandwiches = 1
+    
+    print('-' * 30)
+    amountYesNo = pyip.inputYesNo('would you like more of this sandwich? yes or no\n')
+    if amountYesNo == 'yes':
+        amountNumber = pyip.inputNum('enter a number\n', greaterThan = 1)
+        amountOfSandwiches = amountNumber
+        
+    else:
+        pass
+    
+    for v in order.values():
+        price.append(v)
+    
+    for k,v in order.items():
+        print(k.center(10, ' ') + '$' + str(v).center(10, ' '))
+    
+    print(f"You want to have {amountOfSandwiches} sandwiches")
+    print("That will cost you $", str(amountOfSandwiches * sum(price)))
+
+sandwich()

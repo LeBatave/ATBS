@@ -1,0 +1,56 @@
+import pyinputplus as pyip
+import time 
+import random
+
+""" Chapter 8 of ATBS, Make  your Own Multiplication Quiz. 
+    10 Questions, 3 tries per question and max _ sec to give the answer"""
+    
+
+def player():
+    i = 0
+    goodAns = 0
+    wrongAns = 0
+    
+    while i != 10:
+        test = calculator()
+        if test == True:
+            goodAns += 1
+        elif test == False:
+            wrongAns += 1
+        else:
+            pass
+            
+        i += 1
+    
+    print(f"You have {goodAns} good and {wrongAns} wrong")
+
+def calculator():
+    a = random.randint(0, 9)
+    b = random.randint(0, 9)
+    c = a * b
+    tries = 0 
+    correct = False 
+    
+    try:
+        while tries != 3:
+            print(f"How much is {a} * {b}")
+            awnser = pyip.inputInt(timeout=8)
+           
+            if awnser == c:
+                print("correct")
+                correct = True
+                time.sleep(1)
+                break
+            else:
+                print("Wrong")
+                tries += 1
+                
+    except pyip.TimeoutException:
+        print("Out of time")
+        tries += 1
+    
+    return correct
+    
+    
+    
+player()

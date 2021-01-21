@@ -1,0 +1,104 @@
+"""
+AutoDoc is a script, that checks a folder for .py files, 
+reads them and adds the name of file, the path of directory
+the part until the firt def, and the def return to a dict.
+this dict is used to write its values to a .txt file and store that
+file in the ReadMe folder, that this script makes.
+"""
+import os, re, pprint
+from pathlib import Path
+
+def folderInput(folderPath):
+    """Opens file, makes dict filename, folderpath"""
+
+    pyRegex = re.compile('py$')
+    inputFolder = folderPath #'/home/pi/ATBS'
+    folder = os.listdir(inputFolder)
+    fileDict = {}
+
+    for i in folder:
+        fileDict.clear()
+        fileDict.update(Name = i) #This puts all the filename in dict
+        fileDict.update(Folder = inputFolder) #This puts the path of the folder in dict
+        if bool(pyRegex.findall(i)) == True:
+            #print('='*50)
+            file = inputFolder +'/'+ i
+            doc = open(file,'r')
+            fileInput(doc.read(),fileDict) #opens the function, with file and dict
+            doc.close()
+
+    return None
+
+def fileInput(pathInput,fileDict):
+    """Adds the first part until the def, and def return to dict"""
+
+    fileDict = fileDict
+    newFile = re.split(r'\n', pathInput)
+    workList = [] #This list is a list of lists, difficult to work with
+    otherList = [] #list of def and return
+
+    #this adds a list that start with the def and ends with return and adds that to a list
+    for k,v in enumerate(newFile):
+        for i, j in enumerate(newFile):
+            if (k==0) and (defRegex(j) == True): #Look for the part that ends with the first def
+                a = newFile[k:i] # use enumerate index to slice this part
+                workList.insert(0,a) # add this to the difficult list
+                fileDict.update(Intro = a ) #add intro to Dict
+                break
+            if (defRegex(v) == True) and (k<i) and (returnRegex(j.strip()) == True): # looks for def until return
+                a = newFile[k:i+1]#use enumerate list to slice this part
+                workList.append(a) # add to the difficult list
+                otherList.append([v,j]) #add to the easy list
+                break
+
+    fileDict.update(Function = otherList) #add list of def, return to dict
+
+    return toFile(fileDict)
+
+def toFile(inputDict):
+    """Create a ReadMe folder if its not there, and writes the <filename>Readme.txt"""
+    
+    dct = inputDict
+    pyRegex = re.compile('.py')
+    newName = pyRegex.sub('ReadMe.txt',dct['Name']) #change the .py in ReadMe.txt
+    Folder = os.path.join(dct['Folder'], 'ReadMe/') #creats the folder path to write to
+    FolderPath = Path(Folder) #to get a Bool, to see if The readme folder exists
+
+
+    if FolderPath.exists() == False: #Boolean check, and makes the folder if needed
+        Path(FolderPath).mkdir() 
+    else:
+        pass
+
+    if dct['Function'] !=[]: #if there value is empty it skips the writing
+        for i in dct['Intro']:
+            fileIntro = open(Folder+newName,'a') #opens a file in the ReadMe folder
+            fileIntro.writelines(i+'\n') #writes the info line for line
+            fileIntro.close()
+            
+        for j in dct['Function']:
+            fileDef = open(Folder+newName,'a') 
+            fileDef.writelines(str(j) +'\n') #maker the list in a str 
+            
+        fileDef.close()
+    else:
+        pass
+
+    return None
+
+def defRegex(lineInput):
+    """ Regex function that looks for the line that starts with def"""
+    text = lineInput
+    defRegex = re.compile(r'^def\s')
+    defBool = bool(defRegex.search(text))
+    return defBool
+
+def returnRegex(lineInput):
+    """ Regex function thet looks for the line that starts with return"""
+    text = lineInput
+    returnRegex = re.compile(r'^return\s')
+    returnBool = bool(returnRegex.search(text))
+    return returnBool
+
+folderInput('/home/pi/ATBS')
+folderInput('/home/pi/mu_code/code')
